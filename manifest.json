@@ -1,11 +1,14 @@
 {
   "name": "Inject MV3",
   "version": "0.01",
-  "description": "I'm working on it!",
-  "background":{
-    "service_worker": "background.js"
-  },
-  "permissions": ["scripting"],
-  "host_permissions": ["<all_urls>"],
+  "description": "I'm still working on it!",
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/*"],
+      "css": ["fix.css"],
+      "js": ["contentScript.js"],
+      "run_at": "document_end"
+    }
+  ],
   "manifest_version": 3
 }
