@@ -30,10 +30,8 @@ async function fetchUserQuestions(username) {
           submission["question_link"] = `https://leetcode.com/problems/${submission.titleSlug}`;
       }
       try{
-        console.log("Not FISHY");
         return data.data.recentAcSubmissionList;
       } catch {
-        console.log("FISHY");
         return data;
       }
   } catch (error) {
@@ -43,51 +41,46 @@ async function fetchUserQuestions(username) {
 }
 if (typeof init === 'undefined') {
   const init = function () {
+    console.log("In init function");
     const parentClassName = 'relative.ml-4.flex.items-center.gap-2';
-    const elements = document.querySelectorAll('.' + parentClassName);
-    const username = "phoenixsan";
-    fetchUserQuestions(username)
-        .then(data => {
-            if (data) {
-              console.log(data[0]);
-              elements.forEach((element, index) => {
-                const link = document.createElement('a');
-                link.href = data[0].question_link;
-                link.textContent = 'stalk';
-                element.insertBefore(link, element.firstChild);
-              })  
-            } else {
-                console.log("Failed to fetch user ratings data.");
-            }
-        });
+    const elements = document.querySelectorAll(parentClassName);
+    console.log("elements: " + elements + " " + elements.length)
+
+    if(elements.length > 0){
+      for(let i=0; i < 1+ elements.length; i++){
+        const select = document.createElement("select");
+        for (let i = 0; i < 4; i++) {
+          var opt = document.createElement("option");
+          opt.innerText = "This is here ";
+          select.appendChild(opt);
+        }
+        document.body.appendChild(select);
+      };
+    } else {
+      console.log("Could not find the parent element");
+    }
+
+
+    // fetchUserQuestions(username)
+    //     .then(data => {
+    //         if (data) {
+    //           console.log(data[0]);
+    //           elements.forEach((element, index) => {
+    //             const link = document.createElement('a');
+    //             link.href = data[0].question_link;
+    //             link.textContent = 'stalk';
+    //             element.insertBefore(link, element.firstChild);
+    //           })  
+    //         } else {
+    //             console.log("Failed to fetch user ratings data.");
+    //         }
+    //     });
   }
-  init();
+  if (document.readyState === 'loading') {
+    console.log("Page loading");
+    // document.addEventListener('DOMContentLoaded', init);
+  } else {
+    console.log("Page Loaded");
+    init();
+  }
 }
-
-
-              // data = JSON.parse(data);
-              // console.log("Success!", data);
-              // if (elements.length > 0) {
-              //   elements.forEach((element, index) => {
-              //     const newElement = document.createElement('div');
-              //     const button =  document.createElement('select');
-              //     data.forEach(optionData => {
-              //       const option = document.createElement('option');
-              //       option.value = optionData.value; // Assuming value and text are properties of optionData
-              //       option.textContent = optionData.text;
-              //       button.appendChild(option);
-              //     });
-              //     newElement.appendChild(button);
-              //     element.insertBefore(newElement, element.firstChild);
-              //   });
-              // }
-
-  // const username = "anmol_vernekar";
-  // fetchUserQuestions(username)
-  //     .then(data => {
-  //         if (data) {
-  //             console.log("Success!", data);
-  //         } else {
-  //             console.log("Failed to fetch user ratings data.");
-  //         }
-  //     });
