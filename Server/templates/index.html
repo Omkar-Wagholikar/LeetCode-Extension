@@ -1,0 +1,104 @@
+<!-- templates/index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Streaming Text Area</title>
+    <style>
+        #stream {
+            border: 1px solid black;
+            height: 100px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="text-input" placeholder="Type something here..."></textarea>
+    <div id="stream"></div>
+
+    <script>
+        const input = document.getElementById('text-input');
+        const stream = document.getElementById('stream');
+
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/stream/');
+
+        input.addEventListener('input', () => {
+            const message = input.value;
+            socket.send(JSON.stringify({ 'message': message }));
+        });
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            stream.innerText = data.message;
+        };
+    </script>
+</body>
+</html>
+
+ -->
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Input with UUID</title>
+    <style>
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Text Area</h1>
+    
+    <label for="uuidInput">Enter UUID:</label>
+    <input type="text" id="uuidInput" placeholder="Enter UUID" />
+
+    <textarea id="textArea" placeholder="Type something..." disabled></textarea>
+
+    <script>
+        const textArea = document.getElementById('textArea');
+        const uuidInput = document.getElementById('uuidInput');
+        let socket;
+
+        // Enable the textarea once UUID is entered and WebSocket is connected
+        uuidInput.addEventListener('input', function() {
+            if (uuidInput.value.trim() !== '') {
+                // Create WebSocket connection with the entered UUID
+                const uuid = uuidInput.value.trim();
+                socket = new WebSocket(`ws://127.0.0.1:8000/ws/stream/${uuid}/`);
+                
+                // Enable text area when WebSocket is open
+                socket.onopen = function() {
+                    textArea.disabled = false;
+                };
+
+                // Handle WebSocket errors
+                socket.onerror = function(error) {
+                    console.error("WebSocket Error: ", error);
+                };
+
+                // Handle messages received from the WebSocket
+                socket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    textArea.value = data.message;  // Update text area with the broadcast message
+                };
+            } else {
+                textArea.disabled = true;
+            }
+        });
+
+        // Send message to WebSocket when text is typed
+        textArea.addEventListener('input', function() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                    'message': textArea.value
+                }));
+            }
+        });
+    </script>
+</body>
+</html>
